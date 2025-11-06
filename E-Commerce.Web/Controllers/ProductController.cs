@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace E_Commerce.Web.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
+        [ApiController]
     public class ProductController : ControllerBase
     {
 
@@ -20,6 +20,26 @@ namespace E_Commerce.Web.Controllers
         {
 
             return new List<Product>();
+        }
+
+        [HttpPost]
+        public ActionResult<Product> AddProduct(Product item) {
+
+            return item;
+        }
+
+        [HttpDelete]
+        public ActionResult<Product> DeleteProduct(Product item)
+        {
+
+            return item;
+        }
+
+        [HttpPut]
+        public ActionResult<Product> UpdateProduct(Product item)
+        {
+
+            return item;
         }
     }
 }
