@@ -1,6 +1,10 @@
 
+using E_Commerce.Web.Extintions;
+using ECommerce.Domain.Contracts;
 using ECommerce.Percistance.Data.Contexts;
+using ECommerce.Percistance.Data.DataSeed;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace E_Commerce.Web
 {
@@ -29,6 +33,14 @@ namespace E_Commerce.Web
 
 
             var app = builder.Build();
+
+
+
+            #region Migarate Database - Data seeding 
+            
+            app.Migrate().SeedData();
+         
+            #endregion
 
             // Configure the HTTP request pipeline.
             #region Configure the HTTP request pipeline. // MidelWare 

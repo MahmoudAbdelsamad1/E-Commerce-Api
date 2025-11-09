@@ -18,7 +18,7 @@ namespace E_Commerce.Web.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Product>> GetAll()
         {
-
+     
             return new List<Product>();
         }
 
