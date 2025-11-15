@@ -6,9 +6,7 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Domain.Contracts
 {
-                    
-    public interface IDataInitializer 
+    internal class IGenericReposatory
     {
-        public Task  InitializerAsync();
     }
 }

@@ -28,13 +28,14 @@ namespace ECommerce.Percistance.Data.DataSeed
             Console.WriteLine(path + " ===========================");
         }
 
-        void IDataInitializer.Initializer()
+        async Task IDataInitializer.InitializerAsync()
+   
         {
             try
             {
-                var HasBrands = _dbContext.ProductBrands.Any();
-                var HasTypes = _dbContext.ProductTypes.Any();
-                var HasProducts = _dbContext.Products.Any();
+                var HasBrands = await  _dbContext.ProductBrands.AnyAsync();
+                var HasTypes = await _dbContext.ProductTypes.AnyAsync(); ;
+                var HasProducts = await _dbContext.Products.AnyAsync();
 
 
 
@@ -43,17 +44,17 @@ namespace ECommerce.Percistance.Data.DataSeed
 
                 if (!HasBrands)
                 {
-                    SeedDatFromJson<ProductBrand, int>("brands.json", _dbContext.ProductBrands);
+                  await SeedDatFromJsonAsync<ProductBrand, int>("brands.json", _dbContext.ProductBrands);
                 }
                 if (!HasTypes)
                 {
-                    SeedDatFromJson<ProductType, int>("types.json", _dbContext.ProductTypes);
-                    _dbContext.SaveChanges(); // must has brands and types before create products 
+                    await SeedDatFromJsonAsync<ProductType, int>("types.json", _dbContext.ProductTypes);
+                 await     _dbContext.SaveChangesAsync(); // must has brands and types before create products 
                 }
                 if (!HasProducts)
                 {
-                    SeedDatFromJson<Product, int>("products.json", _dbContext.Products);
-                    _dbContext.SaveChanges();
+                    await SeedDatFromJsonAsync<Product, int>("products.json", _dbContext.Products);
+                  await  _dbContext.SaveChangesAsync();
 
                 }
             }
@@ -66,12 +67,9 @@ namespace ECommerce.Percistance.Data.DataSeed
 
 
 
-        private void SeedDatFromJson<T, TKey>(string fileName, DbSet<T> dbset) where T : BaseEntity<TKey>
+        private async Task SeedDatFromJsonAsync<T, TKey>(string fileName, DbSet<T> dbset) where T : BaseEntity<TKey>
         {
-            // E:\BEPROJECTS\Route\E-CommerceSolution\ECommerce.Persistance\Data\JSONData\
             var filePath = @"..\E-CommerceSolution\ECommerce.Persistance\Data\JSONData\" + fileName;
-
-
 
             if (!File.Exists(filePath)) throw new FileNotFoundException($" file {fileName} is not exist ");
 
@@ -85,10 +83,10 @@ namespace ECommerce.Percistance.Data.DataSeed
                     PropertyNameCaseInsensitive = true,
                 };
 
-                var data = JsonSerializer.Deserialize<List<T>>(datStream, options) ?? new List<T>();
+                var data = await JsonSerializer.DeserializeAsync<List<T>>(datStream, options) ?? new List<T>();
                 if (data is not null)
                 {
-                    dbset.AddRange(data);
+                 await   dbset.AddRangeAsync(data);
                 }
             }
             catch (Exception ex)

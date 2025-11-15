@@ -5,12 +5,13 @@ using ECommerce.Percistance.Data.Contexts;
 using ECommerce.Percistance.Data.DataSeed;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System.Threading.Tasks;
 
 namespace E_Commerce.Web
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -37,8 +38,10 @@ namespace E_Commerce.Web
 
 
             #region Migarate Database - Data seeding 
-            
-            app.Migrate().SeedData();
+
+            await app.Migrate();
+
+            await app.SeedData();
          
             #endregion
 
@@ -58,8 +61,8 @@ namespace E_Commerce.Web
             app.MapControllers(); 
             #endregion
 
-            app.Run();
-        }
+           await app.RunAsync();
+        } 
     }
 }
 //  D . O . P 
