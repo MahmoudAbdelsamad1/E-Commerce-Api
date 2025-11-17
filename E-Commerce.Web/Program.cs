@@ -3,6 +3,7 @@ using E_Commerce.Web.Extintions;
 using ECommerce.Domain.Contracts;
 using ECommerce.Percistance.Data.Contexts;
 using ECommerce.Percistance.Data.DataSeed;
+using ECommerce.Percistance.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
@@ -28,6 +29,8 @@ namespace E_Commerce.Web
 
 
             });
+
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
             #endregion
