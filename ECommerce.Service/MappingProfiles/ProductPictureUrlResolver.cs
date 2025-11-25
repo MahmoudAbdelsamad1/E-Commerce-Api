@@ -14,6 +14,7 @@ namespace ECommerce.Service.MappingProfiles
     {
         private readonly IConfiguration _configuration;
 
+
         public ProductPictureUrlResolver(IConfiguration configuration)
         {
             _configuration = configuration;
