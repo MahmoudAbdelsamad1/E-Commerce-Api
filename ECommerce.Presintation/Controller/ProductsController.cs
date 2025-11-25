@@ -22,7 +22,7 @@ namespace ECommerce.Presintation.Controller
         // Get : BaseUrl/api/Products
 
         [HttpGet]
-        async Task<ActionResult<IEnumerable<ProductDTO>>> GetAllProducts()
+        public  async Task<ActionResult<IEnumerable<ProductDTO>>> GetAllProducts()
         {
             {
 
@@ -36,7 +36,7 @@ namespace ECommerce.Presintation.Controller
         // Get : BaseUrl/api/Products/id
 
         [HttpGet("{id}")]
-        async Task<ActionResult<ProductDTO>> GetProductByIdAsync(int id)
+        public async Task<ActionResult<ProductDTO>> GetProductByIdAsync(int id)
         {
             var product = await _services.GetProductsByIdAsync(id);
 
@@ -47,7 +47,7 @@ namespace ECommerce.Presintation.Controller
         // Get : BaseUrl/api/Products/brands
 
         [HttpGet("brands")]
-        async Task<ActionResult<IEnumerable<BrandDTO>>> GetAllBrands(int id)
+        public async Task<ActionResult<IEnumerable<BrandDTO>>> GetAllBrands()
         {
             var brands = await _services.GetAllBrandsAsync();
 
@@ -57,7 +57,7 @@ namespace ECommerce.Presintation.Controller
         // Get : BaseUrl/api/Products/types 
 
         [HttpGet("types")]
-        async Task<ActionResult<IEnumerable<TypeDTO>>> GetAllTypes(int id)
+        public async Task<ActionResult<IEnumerable<TypeDTO>>> GetAllTypes()
         {
             var types = await _services.GetAllTypesAsync();
 

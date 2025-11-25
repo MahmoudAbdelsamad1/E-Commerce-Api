@@ -1,10 +1,14 @@
 
+using AutoMapper;
 using E_Commerce.Web.Extintions;
 using ECommerce.Domain.Contracts;
 using ECommerce.Percistance.Data.Contexts;
 using ECommerce.Percistance.Data.DataSeed;
 using ECommerce.Percistance.Repositories;
+using ECommerce.Presintation.Controller;
+using ECommerce.Service;
 using ECommerce.Service.Abstraction.IProductServices;
+using ECommerce.Service.MappingProfiles;
 using ECommerce.Service.ProductServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,9 +23,11 @@ namespace E_Commerce.Web
             var builder = WebApplication.CreateBuilder(args);
 
             #region Add services to the container.
+    
+            builder.Services.AddControllers()
+       .AddApplicationPart(typeof(ProductsController).Assembly)
+        .AddControllersAsServices();
 
-            builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddDbContext<StoreDbContext>(options =>
@@ -31,15 +37,26 @@ namespace E_Commerce.Web
 
 
             });
+            builder.Services.AddScoped<IDataInitializer, DataInitializer>();
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IProductServices, ProductServices>();
+            builder.Services.AddAutoMapper(typeof(ServicesAssemplyProvide).Assembly);
+
+           // builder.Services.AddTransient<ProductPictureUrlResolver>();
+
+       
 
             #endregion
+            foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                Console.WriteLine("Loaded Assembly: " + asm.FullName);
+            }
 
 
             var app = builder.Build();
 
+            app.MapControllers();
 
 
             #region Migarate Database - Data seeding 
@@ -59,6 +76,8 @@ namespace E_Commerce.Web
             }
 
             app.UseHttpsRedirection();
+
+            app.UseStaticFiles(); // Enabling Static Files // wwwroot files 
 
             app.UseAuthorization();
 

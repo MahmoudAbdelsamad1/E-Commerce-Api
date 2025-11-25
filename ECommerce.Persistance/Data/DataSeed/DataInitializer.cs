@@ -17,23 +17,18 @@ namespace ECommerce.Percistance.Data.DataSeed
     {
         private readonly StoreDbContext _dbContext;
 
-
-
         public DataInitializer(StoreDbContext dbContext)
         {
             _dbContext = dbContext;
 
-            var path = AppContext.BaseDirectory;
-
-            Console.WriteLine(path + " ===========================");
         }
 
-        async Task IDataInitializer.InitializerAsync()
-   
+        async Task IDataInitializer.InitializerAsync(string path)
+
         {
             try
             {
-                var HasBrands = await  _dbContext.ProductBrands.AnyAsync();
+                var HasBrands = await _dbContext.ProductBrands.AnyAsync();
                 var HasTypes = await _dbContext.ProductTypes.AnyAsync(); ;
                 var HasProducts = await _dbContext.Products.AnyAsync();
 
@@ -44,17 +39,17 @@ namespace ECommerce.Percistance.Data.DataSeed
 
                 if (!HasBrands)
                 {
-                  await SeedDatFromJsonAsync<ProductBrand, int>("brands.json", _dbContext.ProductBrands);
+                    await SeedDatFromJsonAsync<ProductBrand, int>(path, "brands.json", _dbContext.ProductBrands);
                 }
                 if (!HasTypes)
                 {
-                    await SeedDatFromJsonAsync<ProductType, int>("types.json", _dbContext.ProductTypes);
-                 await     _dbContext.SaveChangesAsync(); // must has brands and types before create products 
+                    await SeedDatFromJsonAsync<ProductType, int>(path, "types.json", _dbContext.ProductTypes);
+                    await _dbContext.SaveChangesAsync(); // must has brands and types before create products 
                 }
                 if (!HasProducts)
                 {
-                    await SeedDatFromJsonAsync<Product, int>("products.json", _dbContext.Products);
-                  await  _dbContext.SaveChangesAsync();
+                    await SeedDatFromJsonAsync<Product, int>(path, "products.json", _dbContext.Products);
+                    await _dbContext.SaveChangesAsync();
 
                 }
             }
@@ -62,16 +57,25 @@ namespace ECommerce.Percistance.Data.DataSeed
             {
 
                 Console.WriteLine("Data seed failed  " + ex);
+                Console.WriteLine("path >>  " + Path.Combine(
+        Path.GetFullPath(path)  // IMPORTANT
+, "brands.json"
+    ));
             }
         }
 
+        //  path >>  E:\BEPROJECTS\Route\E-CommerceSolution\ECommerce.Percistance\Data\JSONData\brands.json
+        //           E:\BEPROJECTS\Route\E-CommerceSolution\ECommerce.Persistance\Data\JSONData\brands.json
 
 
-        private async Task SeedDatFromJsonAsync<T, TKey>(string fileName, DbSet<T> dbset) where T : BaseEntity<TKey>
+        private async Task SeedDatFromJsonAsync<T, TKey>(string path, string fileName, DbSet<T> dbset) where T : BaseEntity<TKey>
         {
-            var filePath = @"..\E-CommerceSolution\ECommerce.Persistance\Data\JSONData\" + fileName;
+            var filePath = Path.Combine(
+        Path.GetFullPath(path)  // IMPORTANT
+, fileName
+    );
 
-            if (!File.Exists(filePath)) throw new FileNotFoundException($" file {fileName} is not exist ");
+            if (!File.Exists(filePath)) throw new FileNotFoundException($" file {filePath} is not exist ");
 
             try
             {
@@ -86,7 +90,7 @@ namespace ECommerce.Percistance.Data.DataSeed
                 var data = await JsonSerializer.DeserializeAsync<List<T>>(datStream, options) ?? new List<T>();
                 if (data is not null)
                 {
-                 await   dbset.AddRangeAsync(data);
+                    await dbset.AddRangeAsync(data);
                 }
             }
             catch (Exception ex)

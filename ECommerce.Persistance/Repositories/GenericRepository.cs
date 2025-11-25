@@ -42,7 +42,7 @@ namespace ECommerce.Percistance.Repositories
 
         public async Task<TEntity?> GetByIdAsync(TKey Id)
         {
-            var result = await _dbContext.Set<TEntity>().FindAsync();
+            var result = await _dbContext.Set<TEntity>().FindAsync(Id);
             return result;
         }
 

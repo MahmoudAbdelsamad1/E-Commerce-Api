@@ -9,6 +9,6 @@ namespace ECommerce.Domain.Contracts
                     
     public interface IDataInitializer 
     {
-        public Task  InitializerAsync();
+        public Task  InitializerAsync(string paht);
     }
 }
