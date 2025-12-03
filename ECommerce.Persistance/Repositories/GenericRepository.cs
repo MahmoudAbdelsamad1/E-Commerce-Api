@@ -1,11 +1,14 @@
 ﻿using ECommerce.Domain.Contracts;
 using ECommerce.Domain.Entities.ProductModule;
 using ECommerce.Percistance.Data.Contexts;
+using ECommerce.Service.Specifications;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -39,6 +42,15 @@ namespace ECommerce.Percistance.Repositories
             return result;
         }
 
+        public async Task<IEnumerable<TEntity>> GetAllAsync( ISpecification<TEntity, TKey> expressions)
+        {
+            IQueryable<TEntity>  query = SpecificationEvaluator.CreateQuery<TEntity,TKey>(_dbContext.Set<TEntity>(), expressions);
+
+            return await query.ToListAsync();
+
+        }
+
+ 
 
         public async Task<TEntity?> GetByIdAsync(TKey Id)
         {
