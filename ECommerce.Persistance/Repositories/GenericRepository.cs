@@ -44,7 +44,7 @@ namespace ECommerce.Percistance.Repositories
 
         public async Task<IEnumerable<TEntity>> GetAllAsync( ISpecification<TEntity, TKey> expressions)
         {
-            IQueryable<TEntity>  query = SpecificationEvaluator.CreateQuery<TEntity,TKey>(_dbContext.Set<TEntity>(), expressions);
+            IQueryable<TEntity>  query = SpecificationEvaluator.CreateQuery <TEntity,TKey>(_dbContext.Set<TEntity>(), expressions);
 
             return await query.ToListAsync();
 
