@@ -3,14 +3,25 @@ using System;
 using System.Collections.Generic;
 using System.Formats.Tar;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ECommerce.Service.Specifications
 {
-    public class ProductWithBrandAndTypeSpecifications : BaseSpecifications<Product,int> 
+    public class ProductWithBrandAndTypeSpecifications : BaseSpecifications<Product,int>  
     {
-        public ProductWithBrandAndTypeSpecifications() : base()
+        public ProductWithBrandAndTypeSpecifications(int criteria  ) : base(P =>P.Id == criteria)
+        {
+
+            AddInclude(P => P.ProductBrand);
+            AddInclude(P => P.ProductType);
+
+        }
+
+
+        public ProductWithBrandAndTypeSpecifications(int? typeId, int? productId) : base( P => (typeId == null || typeId == P.TypeId )
+         && (productId == null || productId == P.BrandId ))
         {
 
             AddInclude(P => P.ProductBrand);

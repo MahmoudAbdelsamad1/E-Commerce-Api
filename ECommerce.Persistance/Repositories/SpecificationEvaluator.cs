@@ -19,6 +19,15 @@ namespace ECommerce.Percistance.Repositories
             var query = EntryPoint;
             if(specification is not null)
             {
+                if (specification.Criteria is not null) { 
+                
+                
+                    query = query.Where(specification.Criteria);
+
+
+                }
+
+
                 if (specification.includeExpression is not null && specification.includeExpression.Any())
                 {
 

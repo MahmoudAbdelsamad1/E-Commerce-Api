@@ -22,11 +22,11 @@ namespace ECommerce.Presintation.Controller
         // Get : BaseUrl/api/Products
 
         [HttpGet]
-        public  async Task<ActionResult<IEnumerable<ProductDTO>>> GetAllProducts()
+        public  async Task<ActionResult<IEnumerable<ProductDTO>>> GetAllProducts(int? typeId, int? productId)
         {
             {
 
-                var products = await _services.GetAllProductsAsync();
+                var products = await _services.GetAllProductsAsync( typeId,  productId);
 
                 return Ok(products);
             }

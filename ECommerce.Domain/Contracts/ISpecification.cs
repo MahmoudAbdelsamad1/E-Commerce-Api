@@ -3,12 +3,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.AccessControl;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ECommerce.Domain.Contracts
 {
-    public interface ISpecification<TEntity, TKey> where TEntity : BaseEntity<TKey>    {
-        ICollection<Expression<Func<TEntity,object>>> includeExpression { get;  }
+    public interface ISpecification<TEntity, TKey> where TEntity : BaseEntity<TKey>
+    {
+        ICollection<Expression<Func<TEntity, object>>> includeExpression { get; }
+
+        Expression<Func<TEntity,bool>> Criteria { get; }
+
     }
 }
