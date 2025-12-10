@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Shared
 {
-    public class ProductQueryParams
+    public class ProductQueryParams 
     {
         public int? TypeId { get; set; }
         public int? BrandId { get; set; }
         public string? Search { get; set; }
+        public ProductSortByOptions Sort { get; set; }
+       
     }
 }
