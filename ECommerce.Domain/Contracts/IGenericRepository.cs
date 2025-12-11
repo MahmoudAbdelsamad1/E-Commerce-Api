@@ -22,6 +22,8 @@ namespace ECommerce.Domain.Contracts
 
         void Update (TEntity entity);
 
+        Task<int> GetCountAsync(ISpecification<TEntity, TKey> specification);
+
 
     }
 }
