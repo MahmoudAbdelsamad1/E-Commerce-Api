@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Service.Specifications
 {
-    public   abstract class BaseSpecifications<TEntity, TKey> : ISpecification<TEntity, TKey> where TEntity : BaseEntity<TKey>
+    public abstract class BaseSpecifications<TEntity, TKey> : ISpecification<TEntity, TKey> where TEntity : BaseEntity<TKey>
     {
 
         public Expression<Func<TEntity, bool>> Criteria { get; }
@@ -25,6 +25,37 @@ namespace ECommerce.Service.Specifications
         protected void AddInclude(Expression<Func<TEntity, object>> expression) { 
         
             includeExpression.Add(expression);
+        }
+
+        public Expression<Func<TEntity, object>> OrderBy { get; private set; }
+
+        protected void AddOrderByAscending(Expression<Func<TEntity, object>> expression)
+        {
+
+            OrderBy = expression;
+        }
+
+        public Expression<Func<TEntity, object>> OrderByDes { get; private set; }
+
+        protected void AddOrderByDescending(Expression<Func<TEntity, object>> expression)
+        {
+
+            OrderByDes = expression;
+        }
+
+        public int Skip { get; private set; }
+
+        public int Take { get; private set; }
+
+        public bool IsPaginated { get; private set; }
+
+
+        public void AddPagination( int pageIndex , int pageSize) { 
+        
+            IsPaginated = true;
+
+            Skip = (pageIndex - 1 ) * pageSize;
+            Take = pageSize;
         }
     }
 }

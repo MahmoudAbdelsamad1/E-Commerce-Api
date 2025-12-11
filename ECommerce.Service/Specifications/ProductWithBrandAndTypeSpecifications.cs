@@ -2,6 +2,7 @@
 using ECommerce.Shared;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Formats.Tar;
 using System.Linq;
 using System.Linq.Expressions;
@@ -27,15 +28,40 @@ namespace ECommerce.Service.Specifications
 
             AddInclude(P => P.ProductBrand);
             AddInclude(P => P.ProductType);
+
+
+
+            switch(queryParams.Sort){
+
+                case ProductSortByOptions.NameAsc:
+                    AddOrderByAscending(P => P.Name);
+                        break ;
+                case ProductSortByOptions.NameDes:
+                    AddOrderByDescending(P => P.Name);
+                    break;
+                case ProductSortByOptions.PriceAsc:
+                    AddOrderByAscending(P => P.Price);
+                    break;
+                case ProductSortByOptions.PriceDes:
+                    AddOrderByDescending(P => P.Price);
+                    break;
+                default:
+                    AddOrderByAscending(p=>p.Id);
+                    break;
+
+
+
+
+
+            }
+        
+
+                AddPagination(queryParams.PageIndex, queryParams.PageSize);
+            
+
+
+
         }
-
-        ////search by name
-        //public ProductWithBrandAndTypeSpecifications(string? name) : base(P => P.Name == name)
-        //{
-
-        //    AddInclude(P => P.ProductBrand);
-        //    AddInclude(P => P.ProductType);
-        //}
 
 
     }

@@ -39,6 +39,24 @@ namespace ECommerce.Percistance.Repositories
                     }
                 }
 
+                if(specification.OrderBy is not null)
+                {
+                    query = query.OrderBy(specification.OrderBy);
+                }
+
+                if (specification.OrderByDes is not null)
+                {
+                    query = query.OrderByDescending(specification.OrderByDes);
+                }
+
+                if (specification.IsPaginated)
+                {
+                    query =  query.Skip(specification.Skip).Take(specification.Take);
+                    
+
+                }
+
+
                 //   query = specification.includeExpression.Aggregate(query, (currentQuery, incldueExption) => currentQuery.Include(incldueExption));
 
             }
