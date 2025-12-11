@@ -2,6 +2,8 @@
 using ECommerce.Domain.Contracts;
 using ECommerce.Domain.Entities.ProductModule;
 using ECommerce.Service.Abstraction.IProductServices;
+using ECommerce.Service.Specifications;
+using ECommerce.Shared;
 using ECommerce.Shared.DTOs.ProductDTOs;
 using System;
 using System.Collections.Generic;
@@ -28,12 +30,19 @@ namespace ECommerce.Service.ProductServices
             return _mapper.Map<IEnumerable<BrandDTO>>(brands);
         }
 
-        public async Task<IEnumerable<ProductDTO>> GetAllProductsAsync()
+        public async Task<PaginatedResult<ProductDTO>> GetAllProductsAsync(ProductQueryParams queryParams)
         {
-            var products = await _unitOfWork.GenerateRepository<Product, int>().GetAllAsync();
+            var specification = new  ProductWithBrandAndTypeSpecifications(queryParams);
+            var products = await _unitOfWork.GenerateRepository<Product, int>().GetAllAsync(specification);
 
-            return _mapper.Map<IEnumerable<ProductDTO>>(products);
+            var data =  _mapper.Map<IEnumerable<ProductDTO>>(products);
+            int count = data.Count();
+            var countSpec = new ProductCountSpecifications(queryParams);
+            var totalCount = await _unitOfWork.GenerateRepository<Product, int>().GetCountAsync(countSpec);
+            return new PaginatedResult<ProductDTO>(queryParams.PageIndex, queryParams.PageSize, totalCount, data);
         }
+
+
 
         public async Task<IEnumerable<TypeDTO>> GetAllTypesAsync()
         {
@@ -44,7 +53,8 @@ namespace ECommerce.Service.ProductServices
 
         public async Task<ProductDTO?> GetProductsByIdAsync(int Id)
         {
-            var product = await _unitOfWork.GenerateRepository<Product, int>().GetByIdAsync(Id);
+            var spec = new ProductWithBrandAndTypeSpecifications(Id);
+            var product = await _unitOfWork.GenerateRepository<Product, int>().GetByIdAsync(spec);
 
             return _mapper.Map<ProductDTO>(product);
         }
