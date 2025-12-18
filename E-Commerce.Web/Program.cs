@@ -12,6 +12,7 @@ using ECommerce.Service.MappingProfiles;
 using ECommerce.Service.ProductServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using StackExchange.Redis;
 using System.Threading.Tasks;
 
 namespace E_Commerce.Web
@@ -42,10 +43,12 @@ namespace E_Commerce.Web
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IProductServices, ProductServices>();
             builder.Services.AddAutoMapper(typeof(ServicesAssemplyProvide).Assembly);
+            //builder.Services.AddSingleton<IConnectionMultiplexer> sp =>
+            //               ConnectionMultiplexer.Connect(connectionString ?? "localhost:6379"));
 
-           // builder.Services.AddTransient<ProductPictureUrlResolver>();
+            // builder.Services.AddTransient<ProductPictureUrlResolver>();
 
-       
+
 
             #endregion
             foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
