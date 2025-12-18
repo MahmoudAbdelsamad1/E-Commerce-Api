@@ -45,6 +45,7 @@ namespace E_Commerce.Web
             builder.Services.AddAutoMapper(typeof(ServicesAssemplyProvide).Assembly);
             builder.Services.AddSingleton<IConnectionMultiplexer> (sp =>
                        ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("RedisConnection")!));
+            builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 
             // builder.Services.AddTransient<ProductPictureUrlResolver>();
 

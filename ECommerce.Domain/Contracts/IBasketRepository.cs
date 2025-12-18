@@ -10,7 +10,7 @@ namespace ECommerce.Domain.Contracts
     public interface  IBasketRepository
     {
         public Task<CustomerBasket?> GetBasket(string id);
-        public Task<CustomerBasket?> CreateOrUpdateBasket(CustomerBasket item , TimeSpan timeToLive);
+        public Task<CustomerBasket?> CreateOrUpdateBasket(CustomerBasket item , TimeSpan timeToLive = default);
         public Task<bool> DeleteBasket(string id);
 
     }
