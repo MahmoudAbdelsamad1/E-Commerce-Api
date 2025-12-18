@@ -1,36 +1,62 @@
 ﻿using ECommerce.Domain.Contracts;
 using ECommerce.Domain.Entities.BasketModule;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Caching.Distributed;
 using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace ECommerce.Percistance.Repositories
 {
     public class BasketRepository : IBasketRepository
     {
-        private readonly IConnectionMultiplexer _dataBase;
+        private readonly IDatabase _dataBase;
 
-        public BasketRepository(IConnectionMultiplexer dataBase)
+        public BasketRepository(IConnectionMultiplexer connection)
         {
-            _dataBase = dataBase;
+            _dataBase = connection.GetDatabase();
         }
-        public Task<CustomerBasket?> CreateOrUpdateBasket(BasketItem item, TimeSpan timeToLive)
+        public async Task<CustomerBasket?> CreateOrUpdateBasket(CustomerBasket item, TimeSpan timeToLive)
         {
-            throw new NotImplementedException();
+            var jsonItem = JsonSerializer.Serialize(item);
+            var result = await _dataBase.StringSetAsync(item.Id, jsonItem);
+            if (result)
+            {
+
+                return (await GetBasket(item.Id));
+
+            }
+            else
+            {
+
+                return null;
+            }
         }
 
-        public Task<bool> DeleteBasket(int id)
+        public async Task<bool> DeleteBasket(string id)
         {
-            throw new NotImplementedException();
+            bool deleted = await _dataBase.KeyDeleteAsync(id);
+            return deleted;
         }
 
-        public Task<CustomerBasket?> GetBasket(int id)
+        public async Task<CustomerBasket?> GetBasket(string id)
         {
-            throw new NotImplementedException();
+            var result = await _dataBase.StringGetAsync(id);
+
+            if (result.IsNullOrEmpty)
+            {
+
+                return null;
+            }
+            else
+            {
+
+                return JsonSerializer.Deserialize<CustomerBasket>(result);
+            }
         }
     }
 }

@@ -43,8 +43,8 @@ namespace E_Commerce.Web
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IProductServices, ProductServices>();
             builder.Services.AddAutoMapper(typeof(ServicesAssemplyProvide).Assembly);
-            //builder.Services.AddSingleton<IConnectionMultiplexer> sp =>
-            //               ConnectionMultiplexer.Connect(connectionString ?? "localhost:6379"));
+            builder.Services.AddSingleton<IConnectionMultiplexer> (sp =>
+                       ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("RedisConnection")!));
 
             // builder.Services.AddTransient<ProductPictureUrlResolver>();
 
