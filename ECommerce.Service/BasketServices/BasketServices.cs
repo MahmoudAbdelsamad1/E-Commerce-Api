@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Service.BasketServices
 {
-    internal class BasketServices : IBasketServices
+    public class BasketServices : IBasketServices
     {
         private readonly IBasketRepository _repo;
         private readonly IMapper _mapper;
