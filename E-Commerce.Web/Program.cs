@@ -7,11 +7,14 @@ using ECommerce.Percistance.Data.DataSeed;
 using ECommerce.Percistance.Repositories;
 using ECommerce.Presintation.Controller;
 using ECommerce.Service;
+using ECommerce.Service.Abstraction;
 using ECommerce.Service.Abstraction.IProductServices;
+using ECommerce.Service.BasketServices;
 using ECommerce.Service.MappingProfiles;
 using ECommerce.Service.ProductServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using StackExchange.Redis;
 using System.Threading.Tasks;
 
 namespace E_Commerce.Web
@@ -42,10 +45,14 @@ namespace E_Commerce.Web
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IProductServices, ProductServices>();
             builder.Services.AddAutoMapper(typeof(ServicesAssemplyProvide).Assembly);
+            builder.Services.AddSingleton<IConnectionMultiplexer> (sp =>
+                       ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("RedisConnection")!));
+            builder.Services.AddScoped<IBasketRepository, BasketRepository>();
+            builder.Services.AddScoped<IBasketServices, BasketServices>();
 
-           // builder.Services.AddTransient<ProductPictureUrlResolver>();
+            // builder.Services.AddTransient<ProductPictureUrlResolver>();
 
-       
+
 
             #endregion
             foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
