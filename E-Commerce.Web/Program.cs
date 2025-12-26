@@ -8,8 +8,10 @@ using ECommerce.Percistance.Repositories;
 using ECommerce.Presintation.Controller;
 using ECommerce.Service;
 using ECommerce.Service.Abstraction;
+using ECommerce.Service.Abstraction.ICacheService;
 using ECommerce.Service.Abstraction.IProductServices;
 using ECommerce.Service.BasketServices;
+using ECommerce.Service.ICacheServices;
 using ECommerce.Service.MappingProfiles;
 using ECommerce.Service.ProductServices;
 using Microsoft.EntityFrameworkCore;
@@ -45,10 +47,19 @@ namespace E_Commerce.Web
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IProductServices, ProductServices>();
             builder.Services.AddAutoMapper(typeof(ServicesAssemplyProvide).Assembly);
-            builder.Services.AddSingleton<IConnectionMultiplexer> (sp =>
-                       ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("RedisConnection")!));
+
+            builder.Services.AddSingleton<IConnectionMultiplexer> (sp => {
+                var options = ConfigurationOptions.Parse(
+                    builder.Configuration.GetConnectionString("RedisConnection"));
+
+                options.AbortOnConnectFail = false;
+
+                return ConnectionMultiplexer.Connect(options);
+            });
             builder.Services.AddScoped<IBasketRepository, BasketRepository>();
             builder.Services.AddScoped<IBasketServices, BasketServices>();
+            builder.Services.AddScoped<ICacheRepository, CacheRepository>();
+            builder.Services.AddScoped<ICacheService, CacheServices>();
 
             // builder.Services.AddTransient<ProductPictureUrlResolver>();
 
