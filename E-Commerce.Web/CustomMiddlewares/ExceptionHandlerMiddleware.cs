@@ -19,6 +19,20 @@ namespace E_Commerce.Web.CustomMiddlewares
             try {
 
                await _next.Invoke(httpContext);
+
+                if (httpContext.Response.StatusCode == StatusCodes.Status404NotFound) {
+
+                    var response = new ProblemDetails()
+                    {
+                        Detail = "Error while processing HTTP request - not found",
+                        Title = $"Endpoint {httpContext.Request.Path} Not found  " ,
+                         Status = StatusCodes.Status404NotFound,
+                         Instance = httpContext.Request.Path
+                    };
+
+                   await  httpContext.Response.WriteAsJsonAsync(response);
+                
+                }
             } catch (Exception ex) {
 
                 _logger.LogError(ex, ex.Message);
