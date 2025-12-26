@@ -41,7 +41,7 @@ namespace ECommerce.Presintation.Controller
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductDTO>> GetProductByIdAsync(int id)
         {
-            var product = await _services.GetProductsByIdAsync(id);
+           var product = await _services.GetProductsByIdAsync(id);
 
             return Ok(product);
         }

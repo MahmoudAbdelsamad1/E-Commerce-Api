@@ -1,5 +1,6 @@
 
 using AutoMapper;
+using E_Commerce.Web.CustomMiddlewares;
 using E_Commerce.Web.Extintions;
 using ECommerce.Domain.Contracts;
 using ECommerce.Percistance.Data.Contexts;
@@ -82,11 +83,13 @@ namespace E_Commerce.Web
             await app.Migrate();
 
             await app.SeedData();
-         
+
             #endregion
 
             // Configure the HTTP request pipeline.
             #region Configure the HTTP request pipeline. // MidelWare 
+            app.UseMiddleware<ExceptionHandlerMiddleware>();
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
