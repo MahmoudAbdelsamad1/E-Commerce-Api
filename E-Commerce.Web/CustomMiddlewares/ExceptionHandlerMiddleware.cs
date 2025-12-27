@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ECommerce.Service.CustomExceptions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace E_Commerce.Web.CustomMiddlewares
@@ -37,19 +38,23 @@ namespace E_Commerce.Web.CustomMiddlewares
 
                 _logger.LogError(ex, ex.Message);
 
-                httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
 
                 var problem = new ProblemDetails()
                 {
 
-                    Title = "Internal Server Error ",
+                    Title = "Error while processing HTTP request",
                     Detail = ex.Message,
-                    Status = StatusCodes.Status500InternalServerError,
+                    Status = ex switch {
+                        NonFoundException => StatusCodes.Status404NotFound,
+                        _ => StatusCodes.Status500InternalServerError
+                    },
                     Instance = httpContext.Request.Path
 
                 };
+                httpContext.Response.StatusCode = problem.Status.Value;
 
-                 await httpContext.Response.WriteAsJsonAsync(problem);
+
+                await httpContext.Response.WriteAsJsonAsync(problem);
 
 
 
