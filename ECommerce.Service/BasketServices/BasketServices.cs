@@ -2,18 +2,14 @@
 using ECommerce.Domain.Contracts;
 using ECommerce.Domain.Entities.BasketModule;
 using ECommerce.Service.Abstraction;
+using ECommerce.Service.CustomExceptions;
 using ECommerce.Shared.DTOs.BasketDTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ECommerce.Service.BasketServices
 {
     public class BasketServices : IBasketServices
     {
-        private readonly IBasketRepository _repo;
+        private readonly IBasketRepository _repo; 
         private readonly IMapper _mapper;
 
         public BasketServices(IBasketRepository repo , IMapper mapper)
@@ -24,9 +20,10 @@ namespace ECommerce.Service.BasketServices
         public async Task<BasketDTO> CreateOrUpdateBasketAsync(BasketDTO basket)
         {
            var customerBasket = _mapper.Map<CustomerBasket>(basket);
-            var CreateOrUpdaetBasket = _mapper.Map<BasketDTO>(await _repo.CreateOrUpdateBasket(customerBasket));
+            if (customerBasket is null) throw new  BasketNonFoundException($"basket with Id {basket} not founed ");
+            var CreateOrUpdateBasket = _mapper.Map<BasketDTO>(await _repo.CreateOrUpdateBasket(customerBasket));
 
-            return CreateOrUpdaetBasket ;
+            return CreateOrUpdateBasket;
         }
 
         public Task<bool> DeleteBasketAsync(string id) => _repo.DeleteBasket(id);
