@@ -4,17 +4,12 @@ using ECommerce.Domain.Entities.BasketModule;
 using ECommerce.Service.Abstraction;
 using ECommerce.Service.CustomExceptions;
 using ECommerce.Shared.DTOs.BasketDTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ECommerce.Service.BasketServices
 {
     public class BasketServices : IBasketServices
     {
-        private readonly IBasketRepository _repo;
+        private readonly IBasketRepository _repo; 
         private readonly IMapper _mapper;
 
         public BasketServices(IBasketRepository repo , IMapper mapper)
