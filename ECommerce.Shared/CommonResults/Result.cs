@@ -11,7 +11,7 @@ namespace ECommerce.Shared.CommonResults
     {
         protected List<Error> _error = [];
 
-        public bool IsSuccess => _error.Count > 0;
+        public bool IsSuccess => _error.Count == 0;
         public bool IsFailed => !IsSuccess;
         public List<Error> Error => _error;
 
