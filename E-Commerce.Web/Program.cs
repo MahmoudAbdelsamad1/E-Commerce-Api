@@ -5,6 +5,7 @@ using E_Commerce.Web.Extintions;
 using ECommerce.Domain.Contracts;
 using ECommerce.Percistance.Data.Contexts;
 using ECommerce.Percistance.Data.DataSeed;
+using ECommerce.Percistance.IdentityData;
 using ECommerce.Percistance.Repositories;
 using ECommerce.Presintation.Controller;
 using ECommerce.Service;
@@ -61,8 +62,13 @@ namespace E_Commerce.Web
             builder.Services.AddScoped<IBasketServices, BasketServices>();
             builder.Services.AddScoped<ICacheRepository, CacheRepository>();
             builder.Services.AddScoped<ICacheService, CacheServices>();
+            builder.Services.AddDbContext<EcommerceIdentityDbContext>(options =>
+            {
 
-            // builder.Services.AddTransient<ProductPictureUrlResolver>();
+                options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection"));
+
+
+            });
 
 
 
@@ -81,7 +87,7 @@ namespace E_Commerce.Web
             #region Migarate Database - Data seeding 
 
             await app.Migrate();
-
+            await app.MigrateIdentityDataBase();
             await app.SeedData();
 
             #endregion

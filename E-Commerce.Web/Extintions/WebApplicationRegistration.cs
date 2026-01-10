@@ -1,5 +1,6 @@
 ﻿using ECommerce.Domain.Contracts;
 using ECommerce.Percistance.Data.Contexts;
+using ECommerce.Percistance.IdentityData;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
@@ -11,6 +12,17 @@ namespace E_Commerce.Web.Extintions
         {
           await using  var scope = app.Services.CreateAsyncScope();
             var dbContext = scope.ServiceProvider.GetService<StoreDbContext>();
+            var pendingMigrations = await dbContext.Database.GetPendingMigrationsAsync();
+            if (!pendingMigrations?.Any() ?? false)
+                dbContext.Database.Migrate();
+
+            return app;
+        }
+
+        public static async Task<WebApplication> MigrateIdentityDataBase(this WebApplication app)
+        {
+            await using var scope = app.Services.CreateAsyncScope();
+            var dbContext = scope.ServiceProvider.GetService<EcommerceIdentityDbContext>();
             var pendingMigrations = await dbContext.Database.GetPendingMigrationsAsync();
             if (!pendingMigrations?.Any() ?? false)
                 dbContext.Database.Migrate();
