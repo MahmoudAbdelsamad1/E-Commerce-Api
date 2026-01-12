@@ -3,19 +3,24 @@ using AutoMapper;
 using E_Commerce.Web.CustomMiddlewares;
 using E_Commerce.Web.Extintions;
 using ECommerce.Domain.Contracts;
+using ECommerce.Domain.Entities.IdentityModule;
 using ECommerce.Percistance.Data.Contexts;
 using ECommerce.Percistance.Data.DataSeed;
 using ECommerce.Percistance.IdentityData;
+using ECommerce.Percistance.IdentityData.DataSeed;
 using ECommerce.Percistance.Repositories;
 using ECommerce.Presintation.Controller;
 using ECommerce.Service;
 using ECommerce.Service.Abstraction;
+using ECommerce.Service.Abstraction.IAuthenticationServices;
 using ECommerce.Service.Abstraction.ICacheService;
 using ECommerce.Service.Abstraction.IProductServices;
+using ECommerce.Service.AuthenticationServices;
 using ECommerce.Service.BasketServices;
 using ECommerce.Service.ICacheServices;
 using ECommerce.Service.MappingProfiles;
 using ECommerce.Service.ProductServices;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
@@ -44,7 +49,8 @@ namespace E_Commerce.Web
 
 
             });
-            builder.Services.AddScoped<IDataInitializer, DataInitializer>();
+            builder.Services.AddKeyedScoped<IDataInitializer, DataInitializer>("Default");
+            builder.Services.AddKeyedScoped<IDataInitializer, IdentityDataInitializer>("Identity");
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IProductServices, ProductServices>();
@@ -70,7 +76,9 @@ namespace E_Commerce.Web
 
             });
 
+            builder.Services.AddIdentityCore<ApplicationUser>().AddRoles<IdentityRole>().AddEntityFrameworkStores<EcommerceIdentityDbContext>();
 
+            builder.Services.AddScoped<IAuthenticationServices, AuthenticationServices>();
 
             #endregion
             foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
@@ -89,6 +97,7 @@ namespace E_Commerce.Web
             await app.Migrate();
             await app.MigrateIdentityDataBase();
             await app.SeedData();
+            await app.IdentitySeedData();
 
             #endregion
 

@@ -35,7 +35,7 @@ namespace ECommerce.Shared.CommonResults
         public static Result Failed(List<Error> errors) => new Result(errors);
     }
 
-    public class Result<TValue> : Result
+    public class    Result<TValue> : Result
     {
         private TValue _value;
         public TValue Value => IsSuccess ? _value : throw new InvalidOperationException("Can not access the value ");

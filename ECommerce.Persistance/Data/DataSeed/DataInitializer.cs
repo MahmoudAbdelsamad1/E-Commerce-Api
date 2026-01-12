@@ -75,6 +75,7 @@ namespace ECommerce.Percistance.Data.DataSeed
 , fileName
     );
 
+
             if (!File.Exists(filePath)) throw new FileNotFoundException($" file {filePath} is not exist ");
 
             try
