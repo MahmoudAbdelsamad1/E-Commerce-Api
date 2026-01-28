@@ -3,6 +3,7 @@ using ECommerce.Service.Abstraction.IProductServices;
 using ECommerce.Shared;
 using ECommerce.Shared.CommonResults;
 using ECommerce.Shared.DTOs.ProductDTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -21,8 +22,8 @@ namespace ECommerce.Presintation.Controller
         {
             _services = services;
         }
-        // Get : BaseUrl/api/Products
-
+        // Get : BaseUrl/api/Products   
+        [Authorize]
         [HttpGet]
         [RedisCache(5)]
         public  async Task<ActionResult<PaginatedResult<ProductDTO>>> GetAllProducts([FromQuery] ProductQueryParams queryParams)

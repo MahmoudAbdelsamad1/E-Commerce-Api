@@ -20,10 +20,13 @@ using ECommerce.Service.BasketServices;
 using ECommerce.Service.ICacheServices;
 using ECommerce.Service.MappingProfiles;
 using ECommerce.Service.ProductServices;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using StackExchange.Redis;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace E_Commerce.Web
@@ -80,6 +83,29 @@ namespace E_Commerce.Web
 
             builder.Services.AddScoped<IAuthenticationServices, AuthenticationServices>();
 
+            builder.Services.AddAuthentication(options => {
+
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+            }).AddJwtBearer(options => {
+
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters() { 
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidIssuer = builder.Configuration["JWTOptions:Issuer"],
+                    ValidAudience = builder.Configuration["JWTOptions:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(key: Encoding.UTF8.GetBytes(builder.Configuration["JWTOptions:Secretkey"]))
+
+
+
+                };
+            
+
+            
+            });
             #endregion
             foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
             {
@@ -114,7 +140,7 @@ namespace E_Commerce.Web
             app.UseHttpsRedirection();
 
             app.UseStaticFiles(); // Enabling Static Files // wwwroot files 
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
 
