@@ -1,6 +1,8 @@
 ﻿using ECommerce.Domain.Contracts;
 using ECommerce.Percistance.Data.Contexts;
+using ECommerce.Percistance.IdentityData;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 
 namespace E_Commerce.Web.Extintions
@@ -12,7 +14,18 @@ namespace E_Commerce.Web.Extintions
           await using  var scope = app.Services.CreateAsyncScope();
             var dbContext = scope.ServiceProvider.GetService<StoreDbContext>();
             var pendingMigrations = await dbContext.Database.GetPendingMigrationsAsync();
-            if (!pendingMigrations?.Any() ?? false)
+            if (pendingMigrations?.Any() ?? false)
+                dbContext.Database.Migrate();
+
+            return app;
+        }
+
+        public static async Task<WebApplication> MigrateIdentityDataBase(this WebApplication app)
+        {
+            await using var scope = app.Services.CreateAsyncScope();
+            var dbContext = scope.ServiceProvider.GetService<EcommerceIdentityDbContext>();
+            var pendingMigrations = await dbContext.Database.GetPendingMigrationsAsync();
+            if (pendingMigrations?.Any() ?? false)
                 dbContext.Database.Migrate();
 
             return app;
@@ -30,8 +43,24 @@ namespace E_Commerce.Web.Extintions
                 "Data",
                 "JSONData"
             ); await using var scope = app.Services.CreateAsyncScope();
-            var DataInitializerServices = scope.ServiceProvider.GetRequiredService<IDataInitializer>();
+            var DataInitializerServices = scope.ServiceProvider.GetKeyedService<IDataInitializer>("Default");
            await DataInitializerServices.InitializerAsync(path);
+            return app;
+        }
+        public static async Task<WebApplication> IdentitySeedData(this WebApplication app)
+        {
+            var env = app.Services.GetRequiredService<IWebHostEnvironment>();
+
+            // Build the absolute path to JSONData folder
+            var path = Path.Combine(
+                env.ContentRootPath,
+                 "..",
+                "ECommerce.Persistance",
+                "Data",
+                "JSONData"
+            ); await using var scope = app.Services.CreateAsyncScope();
+            var DataInitializerServices = scope.ServiceProvider.GetKeyedService<IDataInitializer>("Identity");
+            await DataInitializerServices.InitializerAsync(path);
             return app;
         }
 
